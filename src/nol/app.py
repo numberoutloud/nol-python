@@ -59,7 +59,7 @@ ml_words_prefix = {
     71: "എഴുപത്തി",
     81: "എൺപത്തി",
     91: "തൊണ്ണൂറ്റി",
-    101: "നൂറ്റി",
+    101: "ഒരുനൂറ്റി",
     201: "ഇരുനൂറ്റി",
     301: "മുന്നൂറ്റി",
     401: "നാനൂറ്റി",
@@ -90,50 +90,51 @@ ml_words_suffix = {
     7: "യേഴ്",
     8: "യെട്ട്",
     9: " ഒമ്പത്",
+    1000: "പതിനൊന്നായിരം"
 }
 
 
-# def toOnes(num):
-#     return ml_words[num]
-# def toTens(tens, ones):
-#     return ml_words_prefix[tens] + ml_words_suffix[ones]
-# def toHundreds(huns, tens, ones):
-#     return ml_words_prefix[tens] + ml_words_suffix[ones]
-
-
-def toWords(number):
-    nums = [int(digit) for digit in str(number)[::1]]
-    print(nums)
-
+def toWords(origNumber):
+    nums = [int(digit) for digit in str(origNumber)[::1]]
+    # print(nums)
     multply = len(nums)-1
     idx = 0
-    lastIndex = len(nums)-1
-    words = ""
-    for num in nums:
-        if (num > 0):
-            if (idx == lastIndex):
-                words = words + " " + ml_words[num]
+    # lastIndex = len(nums)-1
+    result = ""
+    currNumToProess = origNumber
+    while (idx < len(nums)):
+        num = nums[idx]
+        # if (num > 0):
+        if (currNumToProess < 21):
+            if (currNumToProess > 9 or currNumToProess == origNumber):
+                result = result + " " + ml_words[currNumToProess]
             else:
-                full = 10**multply
-                key = full * nums[idx]
-                # nextNum = 0
-                # if (idx < len(nums)):
-                #     nextNum = nums[idx+1]
-                nextIdx = idx + 1
-                remainingNumsSum = sum(nums[nextIdx:lastIndex + 1])
-                print(key)
-                # print(remainingNumsSum)
-                if (remainingNumsSum > 0):
-                    words = words + " " + ml_words_prefix[key + 1]
-                else:
-                    words = words + " " + ml_words[key]
+                result = result + ml_words_suffix[currNumToProess]
+            break
+        elif (num > 0):
+            full = 10**multply
+            key = full * nums[idx]
+            remNumToProess = currNumToProess - key
+            # print(remNumToProess)
+            if (remNumToProess > 0):
+                result = result + " " + ml_words_prefix[key + 1]
+            else:
+                result = result + " " + ml_words[currNumToProess]
+                break
+            currNumToProess = remNumToProess
         multply = multply - 1
         idx += 1
-    return words
+    return result
 
-# n = 0
-# while (n < 150):
-#     print(words(n))
-#     n = n + 1
-print(toWords(871))
 
+# Testing
+n = 10985
+while (n < 11112):
+    w = toWords(n)
+    print("{} - {}".format(n, w))
+    n = n + 1
+# print(toWords(0))
+# print(toWords(10))
+# print(toWords(20))
+# print(toWords(30))
+# print(toWords(40))
